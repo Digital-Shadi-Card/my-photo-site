@@ -1,50 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="hi">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sachin Editor</title>
+    <title>Sachin's Photo Cleaner AI</title>
     <style>
-        body { text-align: center; font-family: sans-serif; background: #eee; }
-        #canvas { max-width: 90%; margin-top: 10px; border: 2px solid #000; }
-        .box { background: white; padding: 20px; margin: 10px; border-radius: 10px; }
-        button { padding: 10px; margin: 5px; background: red; color: white; border: none; }
+        body { font-family: sans-serif; text-align: center; background: #121212; color: white; padding: 10px; }
+        .ad-space { background: #333; color: #888; padding: 10px; margin: 10px 0; border: 1px dashed #555; font-size: 12px; }
+        .container { background: #1e1e1e; padding: 20px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        #canvas { max-width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
+        input[type="file"] { margin: 15px 0; padding: 10px; background: #333; color: white; border-radius: 5px; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-clean { background: #00d1b2; color: white; }
+        .btn-reset { background: #ff3860; color: white; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h3>फोटो चुनें और साफ़ करें</h3>
+<div class="ad-space">Google विज्ञापन यहाँ दिखेंगे (Top Ad)</div>
+
+<div class="container">
+    <h1>Sachin Photo Cleaner AI</h1>
+    <p>अपनी फोटो साफ़ करें और डॉलर कमाएं!</p>
+    
     <input type="file" id="upload" accept="image/*">
     <br>
     <canvas id="canvas"></canvas>
-    <br>
-    <button onclick="edit('brightness(1.2)')">हल्का साफ़</button>
-    <button onclick="edit('brightness(1.5)')">ज़्यादा साफ़</button>
-    <button onclick="edit('none')">पहले जैसा</button>
+    
+    <div class="controls">
+        <button class="btn-clean" onclick="applyFilter('brightness(1.5) contrast(1.2)')">फोटो साफ़ करें</button>
+        <button class="btn-reset" onclick="resetImage()">Reset</button>
+    </div>
 </div>
+
+<div class="ad-space">Google विज्ञापन यहाँ दिखेंगे (Bottom Ad)</div>
 
 <script>
     const upload = document.getElementById('upload');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    let imgObj = new Image();
+    let originalImage = null;
 
-    upload.onchange = (e) => {
+    upload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
         const reader = new FileReader();
         reader.onload = (event) => {
-            imgObj.onload = () => {
-                canvas.width = imgObj.width;
-                canvas.height = imgObj.height;
-                ctx.drawImage(imgObj, 0, 0);
+            const img = new Image();
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+                canvas.style.display = 'inline-block';
+                originalImage = img;
             };
-            imgObj.src = event.target.result;
+            img.src = event.target.result;
         };
-        reader.readAsDataURL(e.target.files[0]);
-    };
+        reader.readAsDataURL(file);
+    });
 
-    function edit(filterValue) {
-        ctx.filter = filterValue;
-        ctx.drawImage(imgObj, 0, 0);
+    function applyFilter(filterStr) {
+        if (!originalImage) return;
+        ctx.filter = filterStr;
+        ctx.drawImage(originalImage, 0, 0);
+    }
+
+    function resetImage() {
+        if (!originalImage) return;
+        ctx.filter = 'none';
+        ctx.drawImage(originalImage, 0, 0);
     }
 </script>
 
